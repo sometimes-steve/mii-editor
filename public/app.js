@@ -74,7 +74,7 @@ function applyEdit(changes) {
     const updated = editMii(current,changes);
     show(updated);
     $('server-state').textContent = 'Not verified on OCW';
-    $('sync-status').textContent = 'Edited locally. Upload directly to OCW, or save for the patched game and confirm Change face.';
+    $('sync-status').textContent = 'Edited locally. Upload directly to OCW or export your Mii to a file.';
     try { localStorage.setItem(draftKey(baseline),JSON.stringify({baseline:baseline.base64,base64:current.base64,savedAt:Date.now()})); $('draft-state').textContent = current.base64 === baseline.base64 ? 'No changes from loaded data' : 'Draft saved in this browser'; $('restore-draft').disabled = false; }
     catch { $('draft-state').textContent = 'Draft could not be stored · export to keep changes'; }
     $('edit-error').textContent = '';
@@ -144,14 +144,14 @@ $('qr-undo').addEventListener('click',()=>{
   changes.Nickname=qrUndo.name;
   if(applyEdit(changes)) {qrUndo=null;$('qr-undo').hidden=true;$('qr-status').textContent='Restored the Mii appearance from before the QR import.';}
 });
-$('revert').addEventListener('click',() => { show(baseline); try { localStorage.removeItem(draftKey(baseline)); } catch {} updateEditor(); $('edit-error').textContent=''; $('server-state').textContent='Not verified on OCW'; $('sync-status').textContent='Edits reverted to the loaded Mii. Local game files and OCW were not changed by reverting.'; });
+$('revert').addEventListener('click',() => { show(baseline); try { localStorage.removeItem(draftKey(baseline)); } catch {} updateEditor(); $('edit-error').textContent=''; $('server-state').textContent='Not verified on OCW'; $('sync-status').textContent='Edits reverted to the loaded Mii. Exported files and OCW were not changed by reverting.'; });
 $('restore-draft').addEventListener('click',() => { const draft=readDraft(); if (draft) { try { const data=decode(draft.base64); const maker=structuredClone(baseline.maker); if(maker?.mii) maker.mii.mii_data=data.base64; show(maker?.mii ? decode(JSON.stringify(maker)) : data); $('draft-state').textContent='Browser draft restored · compare against loaded data'; } catch(err) { $('edit-error').textContent=err.message; } } });
 function download(blob,name) { const url=URL.createObjectURL(blob); const link=element('a',''); link.href=url; link.download=name; link.click(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
 $('export-json').addEventListener('click',() => { if(current && commitNickname()) download(new Blob([JSON.stringify(current.maker || {mii_data:current.base64},null,2)],{type:'application/json'}),'edited-mii.json'); });
 $('stage-game').addEventListener('click',async () => {
   if(!current || !commitNickname()) return;
   $('stage-game').disabled=true;
-  try { const response=await fetch('/api/game-mii',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mii_data:current.base64})}); const result=await response.json(); if(!response.ok) throw new Error(result.error); $('sync-status').textContent=`Saved ${current.name} for the local game. Restart the patched SMM2 build, select this Mii in the maker profile while connected to OCW, then check persistence. ${result.backup ? 'Previous local Mii backed up.' : ''}`; }
+  try { const response=await fetch('/api/game-mii',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({mii_data:current.base64})}); const result=await response.json(); if(!response.ok) throw new Error(result.error); $('sync-status').textContent=`Saved ${current.name} to the configured folder. This local export does not upload to OCW. ${result.backup ? 'Previous local Mii backed up.' : ''}`; }
   catch(err) { $('sync-status').textContent=err.message; }
   finally { $('stage-game').disabled=false; }
 });
@@ -217,7 +217,7 @@ $('verify-server').addEventListener('click',async () => {
   } catch(err) { $('server-state').textContent='Check failed'; $('sync-status').textContent=err.message; }
   finally { verifying=false; updateEditor(); }
 });
-fetch('/api/game-mii').then(response=>response.json()).then(info=> { $('bridge-info').textContent=`Local game Mii file: ${info.path}. ${info.available ? 'Runtime found; it must include the custom-Mii source patch.' : 'Runtime not found. Build the patched smm2-dx or set OCW_GAME_DATA_ROOT to its data folder.'}`; $('stage-game').disabled=!info.available; }).catch(()=>{ $('bridge-info').textContent='Local game bridge unavailable.'; $('stage-game').disabled=true; });
+fetch('/api/game-mii').then(response=>response.json()).then(info=> { $('bridge-info').textContent=info.available ? `Export destination: ${info.path}. The receiving software must support this format.` : 'Set OCW_GAME_DATA_ROOT to an existing folder before starting the editor to enable local file export.'; $('stage-game').disabled=!info.available; }).catch(()=>{ $('bridge-info').textContent='Local file export unavailable.'; $('stage-game').disabled=true; });
 async function render() {
   if (!current) return;
   renderController?.abort(); const controller = new AbortController(); renderController = controller;

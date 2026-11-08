@@ -4,7 +4,8 @@ import { randomUUID } from 'node:crypto';
 import { decode } from './public/mii.js';
 
 export async function bridgeInfo(root) {
-  const available = await stat(join(root,'smm2-dx-runtime.exe')).then(s=>s.isFile()).catch(()=>false);
+  if (!root) return { path:null, available:false };
+  const available = await stat(root).then(s=>s.isDirectory()).catch(()=>false);
   return { path:join(root,'mii.charinfo'), available };
 }
 export async function stageMii(root, backupRoot, base64) {
@@ -12,7 +13,7 @@ export async function stageMii(root, backupRoot, base64) {
   const data = decode(base64);
   if ((data.bytes[8] & 0xc0) !== 0x80 || data.bytes[65] < 3) throw new Error('The Mii has an invalid create ID or eyebrow position for the game.');
   const info = await bridgeInfo(root);
-  if (!info.available) throw new Error('No smm2-dx runtime in the configured data folder. Build the patched smm2-dx or set OCW_GAME_DATA_ROOT.');
+  if (!info.available) throw new Error('Set OCW_GAME_DATA_ROOT to an existing folder for local Mii export.');
   let original;
   try { original = await readFile(info.path); } catch(err) { if(err.code !== 'ENOENT') throw err; }
   let backup = false;

@@ -1,6 +1,6 @@
 # Mii editor_
 
-A companion app for [smm2-dx](https://github.com/sometimes-steve/smm2-dx), styled after its Build Helper.
+A companion app for [smm2-dx](https://github.com/sometimes-steve/smm2-dx).
 
 Edit your player Mii, import character QR codes, and upload directly to OpenCourse World.
 
@@ -29,7 +29,7 @@ npm start
 
 Open [localhost:3210](http://localhost:3210). The bundled example loads immediately; enter your maker code and click **Load maker** to fetch your current profile.
 
-The editor runs locally. No smm2-dx checkout is required for editing, QR import, or direct OCW upload.
+The editor runs independently on your computer. Editing, QR import, and direct OCW upload require no game checkout.
 
 ## Upload to OpenCourse World
 
@@ -66,13 +66,11 @@ Drafts are stored in your browser and scoped to the maker. They restore automati
 
 To restore a profile backup, open **Inspect data**, import the backup's `before` maker object through the source/import controls, then upload and verify it.
 
-## Optional game bridge
+## Optional local file export
 
-**Save through the patched game instead** writes `mii.charinfo` into a local smm2-dx data folder. This requires a runtime that implements the `mii.charinfo` override; this repository does not include that runtime patch. A stock or older build may ignore the file.
+**Save to a local folder** writes an 88-byte `mii.charinfo` file to a folder you explicitly configure with `OCW_GAME_DATA_ROOT` before starting the editor. There is no default destination. Existing custom files are backed up before replacement.
 
-Set `OCW_GAME_DATA_ROOT` to your patched build's data folder before starting the editor. The default is `../smm2-dx/dist/smm2-dx_data`, relative to this repository. Existing custom files are backed up before replacement.
-
-Restart the patched game and select/update the Mii through the maker profile while connected to OCW. Staging a file alone does not upload it. Use **Check OCW persistence** to compare the server with your draft.
+This is an optional file export for software that supports this format. The editor does not detect or modify an installed game, include a runtime patch, or guarantee that another application will load the file. Exporting does not upload anything to OCW; use direct upload for that.
 
 ## Configuration
 
@@ -81,7 +79,7 @@ Restart the patched game and select/update the Mii through the maker profile whi
 | `PORT` | Local HTTP port; defaults to `3210`. |
 | `OCW_SETUP_PYTHON` | Python executable used to create the optional `.venv`. |
 | `OCW_PYTHON` | Override the configured upload-client Python executable. |
-| `OCW_GAME_DATA_ROOT` | Data folder for a compatible patched smm2-dx runtime. |
+| `OCW_GAME_DATA_ROOT` | Explicit destination folder for optional `mii.charinfo` export; unset by default. |
 
 ## Data and services
 

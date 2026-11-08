@@ -7,7 +7,7 @@ import { importQRImage, fetchSiteQR } from './qr-import.mjs';
 import { uploadMii, uploadStatus, selectUploadConfig, clearUploadConfig } from './ocw-upload.mjs';
 
 const root = new URL('./public/', import.meta.url);
-const gameRoot = process.env.OCW_GAME_DATA_ROOT ? resolve(process.env.OCW_GAME_DATA_ROOT) : fileURLToPath(new URL('../smm2-dx/dist/smm2-dx_data/', import.meta.url));
+const gameRoot = process.env.OCW_GAME_DATA_ROOT ? resolve(process.env.OCW_GAME_DATA_ROOT) : null;
 const backupRoot = fileURLToPath(new URL('./backups/', import.meta.url));
 let staging = false;
 let uploading = false;
