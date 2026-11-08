@@ -101,4 +101,4 @@ References and dependencies: [MiiToStudio](https://github.com/ariankordi/mii-fus
 
 ## Support
 
-If you enjoy my work, consider [buying me a coffee](https://buymeacoffee.com/sometimes_steve)!
+If you enjoy my work, consider buying me a coffee! [https://buymeacoffee.com/sometimes_steve](https://buymeacoffee.com/sometimes_steve)

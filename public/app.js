@@ -28,9 +28,9 @@ function show(data) {
   $('initial').textContent = (m?.username || data.name).slice(0,1);
   $('provider').textContent = m?.login_provider?.toUpperCase() || 'IMPORT';
   $('stats').replaceChildren(...['plays','tries','clears','deaths','world_records','first_clears'].map(key => {
-    const el = element('div','', 'stat'); el.append(element('b', Number.isFinite(m?.stats?.[key]) ? m.stats[key].toLocaleString() : '—'), element('span', key.replaceAll('_',' ').replace(/^./, c => c.toUpperCase()))); return el;
+    const el = element('div','', 'stat'); el.append(element('b', Number.isFinite(m?.stats?.[key]) ? m.stats[key].toLocaleString() : 'N/A'), element('span', key.replaceAll('_',' ').replace(/^./, c => c.toUpperCase()))); return el;
   }));
-  $('summary').replaceChildren(...[['Format','Switch CharInfo'],['Size','88 bytes'],['Gender',data.bytes[40] ? 'Female' : 'Male'],['Favorite color',favoriteColors[data.bytes[39]]],['Mii ID',m?.mii?.id ?? '—']].flatMap(([k,v]) => [element('dt', k),element('dd',v)]));
+  $('summary').replaceChildren(...[['Format','Switch CharInfo'],['Size','88 bytes'],['Gender',data.bytes[40] ? 'Female' : 'Male'],['Favorite color',favoriteColors[data.bytes[39]]],['Mii ID',m?.mii?.id ?? 'N/A']].flatMap(([k,v]) => [element('dt', k),element('dd',v)]));
   for (const [key,offset] of [['height',41],['build',42]]) { $(key).value = data.bytes[offset]; $(`${key}-value`).textContent = data.bytes[offset]; }
   $('fields').replaceChildren(...data.fields.map(f => { const el = element('div','', 'field'); const label = element('span',f.name); label.append(element('small',`0x${f.offset.toString(16)}`)); el.append(label,element('b',f.value)); return el; }));
   $('hex').textContent = Array.from({length:6}, (_,row) => { const offset = row*16; return `${offset.toString(16).padStart(4,'0')}    ${Array.from(data.bytes.slice(offset,offset+16),b=>b.toString(16).padStart(2,'0')).join(' ')}`; }).join('\n');
