@@ -1,0 +1,22 @@
+{
+  "name": "mii-editor",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "setup:ocw": "node setup-ocw.mjs",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@pretendonetwork/mii-js": "1.0.11",
+    "jpeg-js": "0.4.4",
+    "jsqr": "1.4.0",
+    "pngjs": "7.0.0"
+  },
+  "devDependencies": {
+    "qrcode": "1.5.4"
+  }
+}

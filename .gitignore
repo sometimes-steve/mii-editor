@@ -1,0 +1,16 @@
+node_modules/
+.venv/
+__pycache__/
+*.py[cod]
+backups/
+*.tmp
+*.log
+.env
+.env.*
+!.env.example
+*ocw-config*.json
+/preview.png
+/*-preview.png
+/random-controls.png
+.DS_Store
+Thumbs.db
